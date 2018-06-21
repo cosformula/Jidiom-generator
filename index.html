@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/clipboard.js/2.0.1/clipboard.min.js"></script>
+    <title>即话宝典</title>
+    <style>
+        body {
+            margin: 0;
+            background: #F7F7F7;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            /* float:right; */
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: rgb(253, 225, 55);
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px rgb(253, 225, 55);
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .text-shadow {
+            text-shadow: 2px 2px rgb(92, 180, 230);
+        }
+
+        button {
+            background-color: rgb(253, 225, 55);
+            box-shadow: 5px 5px rgb(92, 180, 230);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 90vw;
+            max-width: 400px;
+        }
+
+        .button-group {
+            height: 68px;
+            position: fixed;
+            bottom: 0;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 100vw;
+            text-align: center;
+        }
+
+        .header {
+            text-align: center;
+            background-color: rgb(253, 225, 55);
+            color: white;
+            line-height: 56px;
+            font-weight: bolder;
+            font-size: 30px;
+
+        }
+
+        textarea {
+            height: 50px;
+        }
+
+        .form {
+            width: 90vw;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            overflow: auto;
+            height: calc(100vh - 56px - 68px);
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .label {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: rgb(92, 180, 230);
+            font-weight: bold;
+        }
+
+        a {
+            text-decoration: none;
+            text-align: center;
+            font-size: 10px;
+            float: right;
+            padding-right: 5px;
+            color: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        label {
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+            color: rgb(92, 180, 230);
+        }
+
+
+        .col-25 {
+            float: left;
+            width: 25%;
+            margin-top: 6px;
+        }
+
+        .col-75 {
+            float: left;
+            width: 75%;
+            margin-top: 6px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #text {
+            text-align: center;
+        }
+
+        @media screen and (max-width: 600px) {
+            .col-25,
+            .col-75,
+            input[type=submit] {
+                width: 100%;
+                margin-top: 0;
+            }
+        }
+
+        .github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out
+        }
+
+        @keyframes octocat-wave {
+            0%,
+            100% {
+                transform: rotate(0)
+            }
+            20%,
+            60% {
+                transform: rotate(-25deg)
+            }
+            40%,
+            80% {
+                transform: rotate(10deg)
+            }
+        }
+
+        @media (max-width:500px) {
+            .github-corner:hover .octo-arm {
+                animation: none
+            }
+            .github-corner .octo-arm {
+                animation: octocat-wave 560ms ease-in-out
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="text-shadow header">即话宝典生成器
+        </div>
+        <a href="https://github.com/cosformula/Jidiom-generator" class="github-corner" aria-label="View source on Github">
+            <svg width="56" height="56" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+                aria-hidden="true">
+                <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                    fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+                <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                    fill="currentColor" class="octo-body"></path>
+            </svg>
+        </a>
+
+        <div class="content">
+            <form>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="fname">即话：</label>
+                    </div>
+                    <div class="col-75">
+                        <input id="idiom" type="text" v-model="idiom"></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label for="subject">释义：</label>
+                    </div>
+                    <div class="col-75">
+                        <textarea id="subject" name="subject" v-model="expanation"></textarea>
+                    </div>
+                </div>
+            </form>
+            <div class="label" style="line-height:34px;">
+                图片：
+                <div style="float: right;">
+                    <div style="float: left;">显示释义：</div>
+                    <label class="switch">
+                        <input type="checkbox" v-model="showExpanation">
+                        <span class="slider round"> </span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <canvas id="myCanvas" :width="width" :height="height" style="margin:auto;"></canvas>
+            </div>
+            <div class="label">
+                文本：
+            </div>
+            <div id="text">【{{idiom}}】：{{expanation}}</div>
+        </div>
+        <div class="button-group">
+            <button class="copy text-shadow" data-clipboard-target="#text">复制文本</button>
+            <button class="text-shadow" @click="downloadImage">下载图片</button>
+        </div>
+
+    </div>
+    <script>
+        var clipboard = new ClipboardJS('.copy');
+        clipboard.on('success', function (e) {
+            alert("成功复制到剪贴板");
+            e.clearSelection();
+        });
+
+        clipboard.on('error', function (e) {
+            alert("复制到剪贴板失败");
+        });
+        const initHeight = 260;
+        const initWidth = 600;
+        const initExpanationSize = 30;
+        const jYellow = "rgb(253,225,55)";
+        const jWhite = "#FFFFFF";
+        const jShadow = "rgb(92,180,230)";
+        var app = new Vue({
+            el: '#app',
+            data: {
+                idiom: '即话宝典',
+                expanation: '输入即话和释义，按复制文本即可按指定发布格式将文本复制到剪贴板，按下载图片即可将生成的图片保存至本地。',
+                ctx: null,
+                showExpanation: false,
+                width: initWidth,
+                height: initHeight,
+                idiomSize: 100
+            },
+            mounted: function () {
+                this.ctx = this.getContext();
+                this.setCanvasHeight(initHeight);
+            },
+            methods: {
+                copyText() {},
+                downloadImage() {
+                    let filename = 'jidiom';
+                    let canvas = document.getElementById("myCanvas");
+                    let anchorElement, event, blob;
+                    if (canvas.msToBlob !== undefined && navigator.msSaveBlob !== undefined) {
+                        blob = canvas.msToBlob();
+                        navigator.msSaveBlob(blob, filename + ".png");
+                        return;
+                    }
+                    anchorElement = document.createElement('a');
+                    anchorElement.href = canvas.toDataURL();
+                    if (anchorElement.download !== undefined) {
+                        anchorElement.download = filename + ".png"; // set the download filename
+                        if (typeof MouseEvent === "function") { // does the browser support the object MouseEvent
+                            event = new MouseEvent( // yes create a new mouse click event
+                                "click", {
+                                    view: window,
+                                    bubbles: true,
+                                    cancelable: true,
+                                    ctrlKey: false,
+                                    altKey: false,
+                                    shiftKey: false,
+                                    metaKey: false,
+                                    button: 0,
+                                    buttons: 1,
+                                }
+                            );
+                            anchorElement.dispatchEvent(event); // simulate a click on the download link.
+                        } else
+                        if (anchorElement.fireEvent) { // if no MouseEvent object try fireEvent 
+                            anchorElement.fireEvent("onclick");
+                        }
+                    }
+                },
+                getContext() {
+                    return document.getElementById("myCanvas").getContext("2d");
+                },
+                draw3DText(text, x, y, fontSize, baseline) {
+                    baseline = baseline || 'middle';
+                    let ctx = this.ctx;
+                    ctx.fillStyle = jShadow;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.font = fontSize + 'px Arial';
+                    let shadow = fontSize / 10;
+                    ctx.textBaseline = baseline;
+                    for (let i = 0; i < shadow; i++) {
+                        ctx.fillText(text, x + i, y + i);
+                    }
+                    ctx.fillStyle = jWhite;
+                    ctx.fillText(text, x, y);
+                },
+                roundRect(x, y, width, height, radius, fill) {
+                    let ctx = this.ctx;
+                    if (typeof radius === "undefined") {
+                        radius = 5;
+                    }
+                    ctx.fillStyle = jYellow;
+                    ctx.beginPath();
+                    ctx.moveTo(x + radius, y);
+                    ctx.lineTo(x + width - radius, y);
+                    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                    ctx.lineTo(x + width, y + height - radius);
+                    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                    ctx.lineTo(x + radius, y + height);
+                    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                    ctx.lineTo(x, y + radius);
+                    ctx.quadraticCurveTo(x, y, x + radius, y);
+                    ctx.closePath();
+                    if (fill) {
+                        ctx.fill();
+                    }
+                },
+                drawTextInline(text, x, y, width, height) {
+                    let ctx = this.ctx;
+                    this.idiomSize = 100;
+                    ctx.font = this.idiomSize + 'px Arial';
+                    let minPadding = 20;
+                    let textWidth = ctx.measureText(text).width;
+                    let padding = (width - textWidth) / 2;
+                    if (padding < minPadding) {
+                        this.idiomSize *= (width - minPadding) / textWidth;
+                        ctx.font = this.idiomSize + 'px Arial';
+                        textWidth = ctx.measureText(text).width;
+                        padding = (width - textWidth) / 2;
+                    }
+                    this.draw3DText(text, x + padding, y + height / 2, this.idiomSize);
+                },
+                drawTextAutoLine(text, x, y, width, height) {
+                    let ctx = this.ctx;
+                    let size = initExpanationSize;
+                    let lineHeight = size;
+                    ctx.font = size + 'px Arial';
+                    var lineWidth = 0;
+                    var lastSubStrIndex = 0;
+                    for (let i = 0; i < text.length; i++) {
+                        lineWidth += ctx.measureText(text[i]).width;
+                        if (lineWidth + ctx.measureText(text[i + 1]).width > width - x) {
+                            this.draw3DText(text.substring(lastSubStrIndex, i), x, y, size, 'bottom');
+                            y += lineHeight;
+                            lineWidth = 0;
+                            lastSubStrIndex = i;
+                        }
+                        if (i == text.length - 1) {
+                            this.draw3DText(text.substring(lastSubStrIndex, i + 1), x, y, size, 'bottom');
+                        }
+                    }
+                    if (y > this.height - 25) {
+                        this.setCanvasHeight(this.height + 15);
+                    }
+                    if (y < this.height - 50) {
+                        this.setCanvasHeight(this.height - 15);
+                    }
+                },
+                drawText(idiom, expanation) {
+                    let ctx = this.ctx;
+                    ctx.clearRect(0, 0, this.width, this.height);
+                    this.roundRect(0, 0, this.width, this.height, 50, true);
+                    if (this.showExpanation) {
+                        let idiomHeight = 2 * this.height / 3;
+                        if (idiomHeight > 120) idiomHeight = 120;
+                        this.drawTextInline(idiom, 0, 0, this.width, idiomHeight);
+                        this.drawTextAutoLine(expanation, 10, idiomHeight + initExpanationSize + 10, this.width -
+                            10,
+                            this.height /
+                            3);
+                    } else {
+                        this.drawTextInline(idiom, 0, 0, this.width, this.height);
+                    }
+                },
+                setCanvasHeight(height) {
+                    this.height = height
+                    this.ctx.canvas.height = this.height;
+                    this.ctx.canvas.width = this.width;
+                    this.$nextTick(() => {
+                        this.ctx = this.getContext();
+                        this.drawText(this.idiom, this.expanation)
+                    });
+                }
+            },
+            watch: {
+                idiom: function (newVal, oldVal) {
+                    this.drawText(newVal, this.expanation)
+                },
+                showExpanation: function (newVal, oldVal) {
+                    if (newVal) {
+                        this.setCanvasHeight(this.height);
+                    } else {
+                        this.setCanvasHeight(initHeight);
+                    }
+                },
+                expanation: function (newVal, oldVal) {
+                    this.drawText(this.idiom, newVal)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
