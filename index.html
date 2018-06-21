@@ -93,11 +93,11 @@
             box-shadow: 5px 5px rgb(92, 180, 230);
             border: none;
             color: white;
-            padding: 15px 32px;
+            padding: 15px 30px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 20px;
+            font-size: 15px;
             font-weight: bold;
         }
 
@@ -112,15 +112,15 @@
         }
 
         .button-group {
-            height: 68px;
-            position: fixed;
-            bottom: 0;
+            /* height: 68px; */
+            /* position: fixed; */
+            /* bottom: 0; */
             padding-left: 0;
             padding-right: 0;
             margin-left: auto;
             margin-right: auto;
             display: block;
-            width: 100vw;
+            /* width: 100vw; */
             text-align: center;
         }
 
@@ -145,8 +145,8 @@
         }
 
         .content {
-            overflow: auto;
-            height: calc(100vh - 56px - 68px);
+            /* overflow: scrool; */
+            /* height: calc(100vh - 56px - 68px); */
             padding-left: 10px;
             padding-right: 10px;
         }
@@ -185,6 +185,7 @@
             padding: 12px 12px 12px 0;
             display: inline-block;
             color: rgb(92, 180, 230);
+            font-weight:  bold;
         }
 
 
@@ -283,6 +284,10 @@
                     </div>
                 </div>
             </form>
+            <div class="button-group">
+                <button class="copy text-shadow" data-clipboard-target="#text">复制文本</button>
+                <button class="text-shadow" @click="downloadImage">下载图片</button>
+            </div>
             <div class="label" style="line-height:34px;">
                 图片：
                 <div style="float: right;">
@@ -301,11 +306,6 @@
             </div>
             <div id="text">【{{idiom}}】：{{expanation}}</div>
         </div>
-        <div class="button-group">
-            <button class="copy text-shadow" data-clipboard-target="#text">复制文本</button>
-            <button class="text-shadow" @click="downloadImage">下载图片</button>
-        </div>
-
     </div>
     <script>
         var clipboard = new ClipboardJS('.copy');
@@ -327,7 +327,7 @@
             el: '#app',
             data: {
                 idiom: '即话宝典',
-                expanation: '输入即话和释义，按复制文本即可按指定发布格式将文本复制到剪贴板，按下载图片即可将生成的图片保存至本地。',
+                expanation: '输入即话和释义，按复制文本即可按指定发布格式将文本复制到剪贴板，按下载图片即可将生成的图片保存至本地，在即刻 APP 中打开本链接可能无法保存图片，请在浏览器中打开。',
                 ctx: null,
                 showExpanation: false,
                 width: initWidth,
